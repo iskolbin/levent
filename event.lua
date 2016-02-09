@@ -1,6 +1,7 @@
 local pairs = pairs
 
 local _listeners, _n
+local _queue, _m, _locked
 
 local event = {} 
 
@@ -48,28 +49,26 @@ end
 
 event.async = async
 
-local queue, m, locked = {}, 0, false
 local unpack = table.unpack or unpack
 
 function event.emit( source, message, ... )
-	if locked == false then
-		locked = true
+	if _locked == false then
+		_locked = true
 		async( source, message, ... )
 		local i = 0
-		while i < m do
+		while i < _m do
 			i = i + 1
-			async( unpack( queue[i] ))
+			async( unpack( _queue[i] ))
 		end
 
-		if m > 0 then
-			queue = {}
-			m = 0
+		if _m > 0 then
+			_queue, _m = {}, 0
 		end
 
-		locked = false
+		_locked = false
 	else
-		m = m + 1
-		queue[m] = {source, message, ...}
+		_m = _m + 1
+		_queue[_m] = {source, message, ...}
 	end
 end
 
@@ -93,7 +92,7 @@ function event.reset()
 	_listeners = setmetatable( {}, {__mode = 'k'} )
 	_n = setmetatable( {}, {__mode = 'k'} )
 
-	queue, m, locked = {}, 0, false
+	_queue, _m, _locked = {}, 0, false
 end
 
 event.reset()
