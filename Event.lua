@@ -1,11 +1,14 @@
-local pairs = pairs
+local pairs, unpack = _G.pairs, _G.unpack or table.unpack
 
-local _listeners, _n
-local _queue, _m, _locked
+local _listeners = setmetatable( {}, {__mode = 'k'} )
+local _n = setmetatable( {}, {__mode = 'k'} )
+local _queue = {}
+local _m = 0
+local _locked = false
 
-local event = {} 
+local Event = {} 
 
-function event.bind( source, listener )
+function Event.bind( source, listener )
 	if listener ~= nil then
 		local listeners = _listeners[source]
 		if not listeners then
@@ -20,7 +23,7 @@ function event.bind( source, listener )
 	end
 end
 		
-function event.unbind( source, listener )
+function Event.unbind( source, listener )
 	if listener ~= nil then
 		local listeners = _listeners[source] 
 		if listeners and listeners[listener] then
@@ -47,11 +50,9 @@ local function async( source, message, ... )
 	end
 end
 
-event.async = async
+Event.async = async
 
-local unpack = table.unpack or unpack
-
-function event.emit( source, message, ... )
+function Event.emit( source, message, ... )
 	if _locked == false then
 		_locked = true
 		async( source, message, ... )
@@ -72,29 +73,4 @@ function event.emit( source, message, ... )
 	end
 end
 
-function event.bindAll( source, listeners, n )
-	for i = 1, n or #listeners do
-		event.bind( source, listeners[i] )
-	end
-end
-
-function event.unbindAll( source, listeners, n )
-	if listeners then
-		for i = 1, n or #listeners do
-			event.unbind( source, listeners[i] )
-		end
-	else
-		_listeners[source] = nil
-	end
-end
-
-function event.reset()
-	_listeners = setmetatable( {}, {__mode = 'k'} )
-	_n = setmetatable( {}, {__mode = 'k'} )
-
-	_queue, _m, _locked = {}, 0, false
-end
-
-event.reset()
-
-return event
+return Event

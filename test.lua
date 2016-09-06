@@ -1,10 +1,10 @@
-local event = require'event'
+local Event = require'Event'
 
 print( 'Async' )
 
 local function onEvent( self, source, ... )
 	print( 'Processed by:', self.name, 'received from:', source.name )
-	event.emit( self, 'onEvent' )
+	Event.emit( self, 'onEvent' )
 end
 
 local o = {name = 'o'}
@@ -29,21 +29,20 @@ local oD2 = {name = 'oD2', onEvent = onEvent}
 local oD3 = {name = 'oD3', onEvent = onEvent}
 local oD4 = {name = 'oD4', onEvent = onEvent}
 
-event.bindAll( o, {oA, oB, oC, oD} )
-event.bindAll( oA, {oA1, oA2, oA3, oA4} )
-event.bindAll( oB, {oB1, oB2, oB3, oB4} )
-event.bindAll( oC, {oC1, oC2, oC3, oC4} )
-event.bindAll( oD, {oD1, oD2, oD3, oD4} )
+for _, obj in pairs{oA, oB, oC, oD} do Event.bind( o, obj ) end
+for _, obj in pairs{oA1, oA2, oA3, oA4} do Event.bind( oA, obj ) end
+for _, obj in pairs{oB1, oB2, oB3, oB4} do Event.bind( oB, obj ) end
+for _, obj in pairs{oC1, oC2, oC3, oC4} do Event.bind( oC, obj ) end
+for _, obj in pairs{oD1, oD2, oD3, oD4} do Event.bind( oD, obj ) end
 
-event.async( o, 'onEvent' )
-
+Event.async( o, 'onEvent' )
 
 print()
 print('Sync')
 
 local function onEvent( self, source, ... )
 	print( 'Processed by:', self.name, 'received from:', source.name )
-	event.emit( self, 'onEvent' )
+	Event.emit( self, 'onEvent' )
 end
 
 local o = {name = 'o'}
@@ -68,10 +67,10 @@ local oD2 = {name = 'oD2', onEvent = onEvent}
 local oD3 = {name = 'oD3', onEvent = onEvent}
 local oD4 = {name = 'oD4', onEvent = onEvent}
 
-event.bindAll( o, {oA, oB, oC, oD} )
-event.bindAll( oA, {oA1, oA2, oA3, oA4} )
-event.bindAll( oB, {oB1, oB2, oB3, oB4} )
-event.bindAll( oC, {oC1, oC2, oC3, oC4} )
-event.bindAll( oD, {oD1, oD2, oD3, oD4} )
+for _, obj in pairs{oA, oB, oC, oD} do Event.bind( o, obj ) end
+for _, obj in pairs{oA1, oA2, oA3, oA4} do Event.bind( oA, obj ) end
+for _, obj in pairs{oB1, oB2, oB3, oB4} do Event.bind( oB, obj ) end
+for _, obj in pairs{oC1, oC2, oC3, oC4} do Event.bind( oC, obj ) end
+for _, obj in pairs{oD1, oD2, oD3, oD4} do Event.bind( oD, obj ) end
 
-event.emit( o, 'onEvent' )
+Event.emit( o, 'onEvent' )
