@@ -6,9 +6,9 @@ local _queue = {}
 local _m = 0
 local _locked = false
 
-local Event = {} 
+local event = {} 
 
-function Event.bind( source, listener )
+function event.bind( source, listener )
 	if listener ~= nil then
 		local listeners = _listeners[source]
 		if not listeners then
@@ -23,7 +23,7 @@ function Event.bind( source, listener )
 	end
 end
 		
-function Event.unbind( source, listener )
+function event.unbind( source, listener )
 	if listener ~= nil then
 		local listeners = _listeners[source] 
 		if listeners and listeners[listener] then
@@ -50,9 +50,9 @@ local function async( source, message, ... )
 	end
 end
 
-Event.async = async
+event.async = async
 
-function Event.emit( source, message, ... )
+function event.emit( source, message, ... )
 	if _locked == false then
 		_locked = true
 		async( source, message, ... )
@@ -73,4 +73,4 @@ function Event.emit( source, message, ... )
 	end
 end
 
-return Event
+return event

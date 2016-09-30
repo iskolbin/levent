@@ -1,10 +1,10 @@
-local Event = require'Event'
+local event = require'event'
 
 print( 'Async' )
 
 local function onEvent( self, source, ... )
 	print( 'Processed by:', self.name, 'received from:', source.name )
-	Event.emit( self, 'onEvent' )
+	event.emit( self, 'onEvent' )
 end
 
 local o = {name = 'o'}
@@ -29,20 +29,20 @@ local oD2 = {name = 'oD2', onEvent = onEvent}
 local oD3 = {name = 'oD3', onEvent = onEvent}
 local oD4 = {name = 'oD4', onEvent = onEvent}
 
-for _, obj in pairs{oA, oB, oC, oD} do Event.bind( o, obj ) end
-for _, obj in pairs{oA1, oA2, oA3, oA4} do Event.bind( oA, obj ) end
-for _, obj in pairs{oB1, oB2, oB3, oB4} do Event.bind( oB, obj ) end
-for _, obj in pairs{oC1, oC2, oC3, oC4} do Event.bind( oC, obj ) end
-for _, obj in pairs{oD1, oD2, oD3, oD4} do Event.bind( oD, obj ) end
+for _, obj in pairs{oA, oB, oC, oD} do event.bind( o, obj ) end
+for _, obj in pairs{oA1, oA2, oA3, oA4} do event.bind( oA, obj ) end
+for _, obj in pairs{oB1, oB2, oB3, oB4} do event.bind( oB, obj ) end
+for _, obj in pairs{oC1, oC2, oC3, oC4} do event.bind( oC, obj ) end
+for _, obj in pairs{oD1, oD2, oD3, oD4} do event.bind( oD, obj ) end
 
-Event.async( o, 'onEvent' )
+event.async( o, 'onEvent' )
 
 print()
 print('Sync')
 
 local function onEvent( self, source, ... )
 	print( 'Processed by:', self.name, 'received from:', source.name )
-	Event.emit( self, 'onEvent' )
+	event.emit( self, 'onEvent' )
 end
 
 local o = {name = 'o'}
@@ -67,10 +67,10 @@ local oD2 = {name = 'oD2', onEvent = onEvent}
 local oD3 = {name = 'oD3', onEvent = onEvent}
 local oD4 = {name = 'oD4', onEvent = onEvent}
 
-for _, obj in pairs{oA, oB, oC, oD} do Event.bind( o, obj ) end
-for _, obj in pairs{oA1, oA2, oA3, oA4} do Event.bind( oA, obj ) end
-for _, obj in pairs{oB1, oB2, oB3, oB4} do Event.bind( oB, obj ) end
-for _, obj in pairs{oC1, oC2, oC3, oC4} do Event.bind( oC, obj ) end
-for _, obj in pairs{oD1, oD2, oD3, oD4} do Event.bind( oD, obj ) end
+for _, obj in pairs{oA, oB, oC, oD} do event.bind( o, obj ) end
+for _, obj in pairs{oA1, oA2, oA3, oA4} do event.bind( oA, obj ) end
+for _, obj in pairs{oB1, oB2, oB3, oB4} do event.bind( oB, obj ) end
+for _, obj in pairs{oC1, oC2, oC3, oC4} do event.bind( oC, obj ) end
+for _, obj in pairs{oD1, oD2, oD3, oD4} do event.bind( oD, obj ) end
 
-Event.emit( o, 'onEvent' )
+event.emit( o, 'onEvent' )
