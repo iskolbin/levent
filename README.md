@@ -1,10 +1,8 @@
 event
 =====
 
-Lua event emitter/listener implementation. Implementation is using queue, so
-it's always ok to emit messages during processing of previous message. While
-you can use this library as singleton, another possibility is define separate
-pool (see below).
+Lua event emitter/listener implementation. Implementation uses queueing, so
+it's always ok to emit messages during processing of previous message.
 
 In the library there is defined type `EventPool` which handles emitting and 
 binding of listeners.
@@ -15,7 +13,7 @@ local eventpool = EventPool.new()
 local eventpool2 = EventPool()
 ```
 
-As a convinience `event` has default pool to use static functions.
+As a convinience `event` has default pool to use library static functions.
 
 EventPool.new()
 ---------------
