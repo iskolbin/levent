@@ -15,7 +15,7 @@ local eventpool = EventPool.new()
 local eventpool2 = EventPool()
 ```
 
-As a convinience `event` has default pool to use as static functions.
+As a convinience `event` has default pool to use static functions.
 
 EventPool.new()
 ---------------
@@ -29,8 +29,8 @@ Bind `listener` to messages emitable by `source`. After `source` emits any messa
 pool will lookup callbacks from `listener`. Returns `true` on success and `false` + 
 error on fail. Possible errors are:
 
-* event.ERROR_NIL_LISTENER if `listener` is `nil`
-* event.ERROR_LISTENER_ALREADY_BINDED if `listener` is already binded to `source`
+* `event.ERROR_NIL_LISTENER`, if `listener` is `nil`
+* `event.ERROR_LISTENER_ALREADY_BINDED`, if `listener` is already binded to `source`
 
 ```lua
 local src = {}
@@ -44,8 +44,8 @@ EventPool:unbind( source, listener )
 Unbind `listener` from `source`. Returns `true` on success and `false` + error
 on fail. Possible errors are:
 
-* event.ERROR_NIL_LISTENER if `listener` is `nil`
-* event.ERROR_LISTENER_NOT_BINDED if `listener` is not binded to `source`
+* `event.ERROR_NIL_LISTENER`, if `listener` is `nil`
+* `event.ERROR_LISTENER_NOT_BINDED`, if `listener` is not binded to `source`
 
 EventPool:emit( source, message, ... )
 --------------------------------------
@@ -54,8 +54,8 @@ Emits `message` from `source`. All binded listeners with field `message` will
 be notified and according method (`message`) will be called with passed varargs.
 Function can return:
 
-* event.STATUS_PROCESSED if events queue was empty
-* event.STATUS_QUEUED if events queue wasn't empty and message was queued
+* `event.STATUS_PROCESSED`, if events queue was empty
+* `event.STATUS_QUEUED`, if events queue wasn't empty and message was queued
 
 ```lua
 local src = { name = 'src', }
@@ -69,7 +69,7 @@ event.emit( src, 'onMessage', 42 ) -- will print list1, src, 42
 EventPool:notify( source, message, ... )
 ----------------------------------------
 
-Lower level of `emit` (internally `emit` is implemented with `notify` this
+Lower level of `emit` (internally `emit` is implemented using `notify`) this
 function directly notifies all listeners without queueing. This is a bit faster,
 but in many cases it can lead to very hard to catch bugs. It's better just not
 to use this function.
