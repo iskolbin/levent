@@ -63,7 +63,6 @@ function EventPool:notify( source, message, ... )
 			end
 		end
 	end
-	return event.STATUS_PROCESSED
 end
 
 function EventPool:emit( source, message, ... )
