@@ -1,10 +1,10 @@
 --[[ 
  
- event -- v0.5.0 public domain Lua event emitting/listening
+ event -- v0.6.4 public domain Lua event emitting/listening
  no warranty implied; use at your own risk
 
  author: Ilya Kolbin (iskolbin@gmail.com)
- url: github.com/iskolbin/ratio
+ url: github.com/iskolbin/event
 
  COMPATIBILITY
 
@@ -20,15 +20,14 @@
 
 local setmetatable, pairs, next, unpack = _G.setmetatable, _G.pairs, _G.next, _G.unpack or table.unpack
 
-local event = {
+local EventPool = {
 	STATUS_PROCESSED = 'Processed',
 	STATUS_QUEUED = 'Queued',
 	ERROR_NIL_LISTENER = 'Listener is nil',
+	ERROR_NIL_SOURCE = 'Source is nil',
 	ERROR_LISTENER_ALREADY_BINDED = 'Listener is already binded',
 	ERROR_LISTENER_NOT_BINDED = 'Listener is not binded',
 }
-
-local EventPool = {}
 
 EventPool.__index = EventPool
 
@@ -40,36 +39,34 @@ function EventPool.new()
 end
 
 function EventPool:bind( source, listener )
-	if listener ~= nil then
-		local listeners = self._listeners[source]
-		if not listeners then
-			self._listeners[source] = {[listener] = listener}
-		else
-			if listeners[listener] == nil then
-				listeners[listener] = listener
-			else
-				return false, event.ERROR_LISTENER_ALREADY_BINDED
-			end
-		end
+	if source == nil then return false, EventPool.ERROR_NIL_SOURCE end
+	if listener == nil then return false, EventPool.ERROR_NIL_LISTENER end
+
+	local listeners = self._listeners[source]
+	if not listeners then
+		self._listeners[source] = {[listener] = listener}
 	else
-		return false, event.ERROR_NIL_LISTENER
+		if listeners[listener] == nil then
+			listeners[listener] = listener
+		else
+			return false, EventPool.ERROR_LISTENER_ALREADY_BINDED
+		end
 	end
 	return true
 end
 		
-function EventPool.unbind( source, listener )
-	if listener ~= nil then
-		local listeners = self._listeners[source] 
-		if listeners and listeners[listener] then
-			listeners[listener] = nil
-			if not next( listeners ) then	
-				self._listeners[source] = nil
-			end
-		else
-			return false, event.ERROR_LISTENER_NOT_BINDED
+function EventPool:unbind( source, listener )
+	if source == nil then return false, EventPool.ERROR_NIL_SOURCE end
+	if listener == nil then return false, EventPool.ERROR_NIL_LISTENER end
+
+	local listeners = self._listeners[source] 
+	if listeners and listeners[listener] then
+		listeners[listener] = nil
+		if not next( listeners ) then	
+			self._listeners[source] = nil
 		end
 	else
-		return false, event.ERROR_NIL_LISTENER
+		return false, EventPool.ERROR_LISTENER_NOT_BINDED
 	end
 	return true
 end
@@ -102,33 +99,13 @@ function EventPool:emit( source, message, ... )
 			self._queue[1] = nil
 		end
 
-		return event.STATUS_PROCESSED
+		return EventPool.STATUS_PROCESSED
 	else
 		queue[#queue+1] = {source, message, ...}
-		return event.STATUS_QUEUED
+		return EventPool.STATUS_QUEUED
 	end
 end
 
-event.EventPool = setmetatable( EventPool, { __call = function(_,...)
+return setmetatable( EventPool, { __call = function(_,...)
 	return EventPool.new( ... )
 end })
-
-event._defaultpool = EventPool()
-
-function event.bind( ... )
-	return event._defaultpool:bind( ... )
-end
-
-function event.unbind( ... )
-	return event._defaultpool:unbind( ... )
-end
-
-function event.async( ... )
-	return event._defaultpool:async( ... )
-end
-
-function event.emit( ... )
-	return event._defaultpool:emit( ... )
-end
-
-return event
