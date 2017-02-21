@@ -1,4 +1,4 @@
-event
+Event
 =====
 
 Lua event emitter/listener implementation. Implementation uses queueing, so
