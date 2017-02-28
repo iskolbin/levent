@@ -1,8 +1,8 @@
 ![Build Status](https://travis-ci.org/iskolbin/event.svg?branch=master)
 [![license](https://img.shields.io/badge/license-public%20domain-blue.svg)]()
 
-Event
-=====
+Lua event
+=========
 
 Lua event emitter/listener implementation. Implementation uses queueing, so
 it's always ok to emit messages during processing of previous message. The
